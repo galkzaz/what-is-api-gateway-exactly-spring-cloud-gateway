@@ -1,0 +1,7 @@
+server:
+  port: 8081
+  servlet:
+    application-display-name: auth-service
+spring:
+  application:
+    name: auth-service

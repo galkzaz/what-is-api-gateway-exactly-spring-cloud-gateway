@@ -1,0 +1,7 @@
+server:
+  port: 8082
+  servlet:
+    application-display-name: product-service
+spring:
+  application:
+    name: product-service

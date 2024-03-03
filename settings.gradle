@@ -1,0 +1,5 @@
+rootProject.name = 'spring-cloud-gateway-tutorial'
+include ('gateway-service')
+include ('auth-service')
+include ('product-service')
+include ('order-service')

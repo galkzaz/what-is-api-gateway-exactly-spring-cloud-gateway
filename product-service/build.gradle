@@ -14,6 +14,9 @@ dependencies {
     implementation 'org.yaml:snakeyaml:2.2'
     implementation ('com.github.javafaker:javafaker:1.0.2'){ exclude module: 'snakeyaml' }
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {

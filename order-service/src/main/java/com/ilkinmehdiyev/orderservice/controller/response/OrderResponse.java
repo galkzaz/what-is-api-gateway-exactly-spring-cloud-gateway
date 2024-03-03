@@ -1,4 +1,6 @@
 package com.ilkinmehdiyev.orderservice.controller.response;
 
-public record OrderResponse(String message) {
+import java.util.UUID;
+
+public record OrderResponse(UUID id, String message) {
 }

@@ -5,3 +5,33 @@ server:
 spring:
   application:
     name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: order-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/orders/**
+          metadata:
+            response-timeout: 200
+            connect-timeout: 200
+        - id: product-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/product/**
+          metadata:
+            response-timeout: 400
+            connect-timeout: 400
+
+security:
+  auth:
+    url: http://localhost:8081
+    introspect-api: /api/v1/auth/introspect
+
+ms:
+  product:
+    root: http://localhost:8082
+  auth:
+    root: http://localhost:8081
+  order:
+    root: http://localhost:8083

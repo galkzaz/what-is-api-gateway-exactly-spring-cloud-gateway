@@ -1,6 +1,7 @@
 package com.ilkinmehdiyev.gatewayservice.config;
 
 import com.ilkinmehdiyev.gatewayservice.config.constant.ConfigurationConstants;
+import com.ilkinmehdiyev.gatewayservice.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,10 +22,10 @@ import static com.ilkinmehdiyev.gatewayservice.config.constant.ConfigurationCons
 @RequiredArgsConstructor
 @Configuration
 public class GatewayConfig {
-//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Value("${ms.user-mng.root}")
-    private String msUserMngRoot;
+    @Value("${ms.product.root}")
+    private String msProductRoot;
 
     @Value("${ms.auth.root}")
     private String msAuthRoot;
@@ -40,18 +41,11 @@ public class GatewayConfig {
                         ConfigurationConstants.AUTH_SERVICE_ID,
                         getRoute(ConfigurationConstants.AUTH_SERVICE_ROOT, msAuthRoot))
                 .route(
-                        ConfigurationConstants.USER_MANAGEMENT_SERVICE_ID,
-                        getRoute(ConfigurationConstants.USER_MANAGEMENT_SERVICE_ROOT, msUserMngRoot))
+                        ConfigurationConstants.PRODUCT_SERVICE_ID,
+                        getRoute(ConfigurationConstants.PRODUCTS_SERVICE_ROOT, msProductRoot))
                 .route(
                         ConfigurationConstants.ORDER_SERVICE_ID,
                         getRoute(ConfigurationConstants.ORDERS_SERVICE_ROOT, msOrderRoot))
-                //        .route("order-service", r -> r.path("/order/**").uri(ROOT_DOMAIN.concat(":8082")))
-                //        .route(
-                //            "go-test-server",
-                //            r ->
-                //                r.path("/hello-go/**")
-                //                    .filters(filterSpec -> getGatewayFilterSpec(filterSpec, "/hello-go"))
-                //                    .uri(ROOT_DOMAIN.concat(":80")))
                 .build();
     }
 
@@ -65,7 +59,6 @@ public class GatewayConfig {
     private GatewayFilterSpec getGatewayFilterSpec(GatewayFilterSpec f, String serviceUri) {
         return f.rewritePath(
                         serviceUri.concat("(?<segment>.*)"), API_V1.concat(serviceUri).concat("${segment}"))
-//                .filter(jwtAuthenticationFilter);
-                .filter(null);
+                .filter(jwtAuthenticationFilter);
     }
 }

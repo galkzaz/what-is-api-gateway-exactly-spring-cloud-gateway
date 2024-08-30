@@ -14,6 +14,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+/*
+ * This is simply a reactive WebClient-based Auth implementation, To apply a Gateway filter we need to implement a specific interface, GatewayFilter
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -28,21 +31,20 @@ public class JwtAuthenticationFilter implements GatewayFilter, Ordered {
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     ServerHttpRequest request = exchange.getRequest();
 
+    WebClient webClient = WebClient.builder().baseUrl(authServiceBase).build();
 
-      WebClient webClient = WebClient.builder().baseUrl(authServiceBase).build();
-
-      return webClient
-          .get()
-          .uri(authServiceIntrospect)
-          .retrieve()
-          .bodyToMono(Boolean.class)
-          .flatMap(
-              credentials -> {
-                log.info("Starting authentication, ACCESS: {}", credentials);
-                return chain.filter(exchange);
-              })
-          .onErrorResume(
-              ex -> onError(exchange, "Failed to authenticate token.", HttpStatus.UNAUTHORIZED));
+    return webClient
+        .get()
+        .uri(authServiceIntrospect)
+        .retrieve()
+        .bodyToMono(Boolean.class)
+        .flatMap(
+            credentials -> {
+              log.info("Starting authentication, ACCESS: {}", credentials);
+              return chain.filter(exchange);
+            })
+        .onErrorResume(
+            ex -> onError(exchange, "Failed to authenticate token.", HttpStatus.UNAUTHORIZED));
   }
 
   private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
@@ -53,7 +55,6 @@ public class JwtAuthenticationFilter implements GatewayFilter, Ordered {
         .getResponse()
         .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(err.getBytes())));
   }
-
 
   @Override
   public int getOrder() {
